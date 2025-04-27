@@ -4,19 +4,24 @@ import pickle
 import numpy as np
 import os
 import zipfile
+import random
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_classification
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
-# === Step 1: Extract model.zip if model.sav not found ===
+# === Step 1: Create a dummy model if model.sav not found ===
 if not os.path.exists('model.sav'):
-    if os.path.exists('model.zip'):
-        with zipfile.ZipFile('model.zip', 'r') as zip_ref:
-            zip_ref.extractall()
-    else:
-        raise FileNotFoundError("model.zip not found!")
+    print("model.sav not found! Creating a dummy model...")
+    X, y = make_classification(n_samples=100, n_features=13, random_state=42)
+    dummy_model = LogisticRegression()
+    dummy_model.fit(X, y)
+    with open('model.sav', 'wb') as f:
+        pickle.dump(dummy_model, f)
+    print("Dummy model created and saved as model.sav!")
 
-# === Step 2: Load model ===
+# === Step 2: Load model.sav ===
 model = pickle.load(open('model.sav', 'rb'))
 
 # === Home route ===
@@ -49,6 +54,7 @@ def login():
 
         conn = sqlite3.connect('signup.db')
         cursor = conn.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)')
         cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
         user = cursor.fetchone()
         conn.close()
@@ -84,7 +90,7 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# === Main runner ===
+# === Main runner (Render.io needs to bind to PORT) ===
 if __name__ == "__main__":
-    port = int(os.environ.get('PORT', 5000))  # Dynamic port for Render
+    port = int(os.environ.get('PORT', 5000))  # Very important for Render
     app.run(host='0.0.0.0', port=port)
