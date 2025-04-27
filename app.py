@@ -8,15 +8,41 @@ import os
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
-# Download the model from Google Drive if not already present
+# Download file from Google Drive (Special Handling for big files)
+def download_file_from_google_drive(file_id, destination):
+    URL = "https://docs.google.com/uc?export=download"
+
+    session = requests.Session()
+
+    response = session.get(URL, params={'id': file_id}, stream=True)
+    token = get_confirm_token(response)
+
+    if token:
+        params = {'id': file_id, 'confirm': token}
+        response = session.get(URL, params=params, stream=True)
+
+    save_response_content(response, destination)
+
+def get_confirm_token(response):
+    for key, value in response.cookies.items():
+        if key.startswith('download_warning'):
+            return value
+    return None
+
+def save_response_content(response, destination):
+    CHUNK_SIZE = 32768
+
+    with open(destination, "wb") as f:
+        for chunk in response.iter_content(CHUNK_SIZE):
+            if chunk:
+                f.write(chunk)
+
+# Load the model
 model_path = 'model.sav'
 if not os.path.exists(model_path):
-    url = "https://drive.google.com/uc?export=download&id=1MQFmVhzcL8BPHdtck1M39Sk8nB511pWN"
-    r = requests.get(url)
-    with open(model_path, 'wb') as f:
-        f.write(r.content)
+    file_id = '1MQFmVhzcL8BPHdtck1M39Sk8nB511pWN'  # your file ID from Google Drive link
+    download_file_from_google_drive(file_id, model_path)
 
-# Load the trained model
 model = pickle.load(open(model_path, 'rb'))
 
 # Route: Home page
