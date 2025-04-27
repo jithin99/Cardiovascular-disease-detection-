@@ -16,7 +16,7 @@ if not os.path.exists('model.sav'):
     else:
         raise FileNotFoundError("model.zip not found!")
 
-# === Step 2: Now load model.sav ===
+# === Step 2: Load model ===
 model = pickle.load(open('model.sav', 'rb'))
 
 # === Home route ===
@@ -33,6 +33,7 @@ def signup():
 
         conn = sqlite3.connect('signup.db')
         cursor = conn.cursor()
+        cursor.execute('CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT)')
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
         conn.commit()
         conn.close()
@@ -85,4 +86,5 @@ def logout():
 
 # === Main runner ===
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))  # Dynamic port for Render
+    app.run(host='0.0.0.0', port=port)
