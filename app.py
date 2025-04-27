@@ -6,9 +6,9 @@ import os
 import zipfile
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Replace with a strong secret key
+app.secret_key = 'your_secret_key'
 
-# === Unzip model.zip if model.sav does not exist ===
+# === Step 1: Extract model.zip if model.sav not found ===
 if not os.path.exists('model.sav'):
     if os.path.exists('model.zip'):
         with zipfile.ZipFile('model.zip', 'r') as zip_ref:
@@ -16,21 +16,21 @@ if not os.path.exists('model.sav'):
     else:
         raise FileNotFoundError("model.zip not found!")
 
-# === Load the trained model ===
+# === Step 2: Now load model.sav ===
 model = pickle.load(open('model.sav', 'rb'))
 
-# === Home page ===
+# === Home route ===
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# === Signup page ===
+# === Signup route ===
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+
         conn = sqlite3.connect('signup.db')
         cursor = conn.cursor()
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
@@ -39,32 +39,32 @@ def signup():
         return redirect(url_for('login'))
     return render_template('signup.html')
 
-# === Login page ===
+# === Login route ===
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        
+
         conn = sqlite3.connect('signup.db')
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
         user = cursor.fetchone()
         conn.close()
-        
+
         if user:
             session['username'] = username
             return redirect(url_for('predict'))
         else:
             return "Invalid credentials. Please try again."
-    return render_template('signin.html')  # Note: You have signin.html, not login.html
+    return render_template('signin.html')
 
-# === Prediction page ===
+# === Predict route ===
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if 'username' not in session:
         return redirect(url_for('login'))
-    
+
     if request.method == 'POST':
         try:
             features = [float(x) for x in request.form.values()]
@@ -74,15 +74,15 @@ def predict():
             return render_template('prediction.html', prediction=result)
         except Exception as e:
             return f"Error occurred: {str(e)}"
-    
+
     return render_template('prediction.html')
 
-# === Logout ===
+# === Logout route ===
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# === Run App ===
+# === Main runner ===
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
