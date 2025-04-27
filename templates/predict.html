@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Predict Heart Disease</title>
+</head>
+<body>
+    <h1>Enter Details for Prediction</h1>
+    <form action="/predict" method="post">
+        {% for i in range(10) %}
+            Feature {{i+1}}: <input type="text" name="feature{{i}}" required><br><br>
+        {% endfor %}
+        <button type="submit">Predict</button>
+    </form>
+    <br>
+    <a href="/logout">Logout</a>
+</body>
+</html>
