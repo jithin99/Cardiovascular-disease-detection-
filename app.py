@@ -2,12 +2,22 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import pickle
 import numpy as np
+import requests
+import os
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
+# Download the model from Google Drive if not already present
+model_path = 'model.sav'
+if not os.path.exists(model_path):
+    url = "https://drive.google.com/uc?export=download&id=1MQFmVhzcL8BPHdtck1M39Sk8nB511pWN"
+    r = requests.get(url)
+    with open(model_path, 'wb') as f:
+        f.write(r.content)
+
 # Load the trained model
-model = pickle.load(open('model.sav', 'rb'))
+model = pickle.load(open(model_path, 'rb'))
 
 # Route: Home page
 @app.route('/')
