@@ -8,21 +8,23 @@ import zipfile
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
-# Unzip model.zip if model.sav is not already extracted
+# === Unzip model.zip if model.sav does not exist ===
 if not os.path.exists('model.sav'):
     if os.path.exists('model.zip'):
         with zipfile.ZipFile('model.zip', 'r') as zip_ref:
             zip_ref.extractall()
+    else:
+        raise FileNotFoundError("model.zip not found!")
 
-# Load the trained model
+# === Load the trained model ===
 model = pickle.load(open('model.sav', 'rb'))
 
-# Route: Home page
+# === Home page ===
 @app.route('/')
 def home():
     return render_template('home.html')
 
-# Route: Signup page
+# === Signup page ===
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
@@ -37,7 +39,7 @@ def signup():
         return redirect(url_for('login'))
     return render_template('signup.html')
 
-# Route: Login page
+# === Login page ===
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -55,9 +57,9 @@ def login():
             return redirect(url_for('predict'))
         else:
             return "Invalid credentials. Please try again."
-    return render_template('login.html')
+    return render_template('signin.html')  # Note: You have signin.html, not login.html
 
-# Route: Prediction page
+# === Prediction page ===
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     if 'username' not in session:
@@ -69,18 +71,18 @@ def predict():
             features = np.array(features).reshape(1, -1)
             prediction = model.predict(features)
             result = 'Heart Disease Detected' if prediction[0] == 1 else 'No Heart Disease'
-            return render_template('result.html', prediction=result)
+            return render_template('prediction.html', prediction=result)
         except Exception as e:
             return f"Error occurred: {str(e)}"
     
-    return render_template('predict.html')
+    return render_template('prediction.html')
 
-# Route: Logout
+# === Logout ===
 @app.route('/logout')
 def logout():
     session.pop('username', None)
     return redirect(url_for('login'))
 
-# Run the app
+# === Run App ===
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
