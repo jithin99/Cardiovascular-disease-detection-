@@ -1,18 +1,242 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html lang="en-US">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Predict Heart Disease</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<title>Result</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- Favicon -->
+	<link rel="icon" type="image/png" sizes="56x56" href="static/assets/images/fav-icon/icon.png">
+	<!-- bootstrap CSS -->
+	<link rel="stylesheet" href="static/assets/css/bootstrap.min.css" type="text/css" media="all">
+	<!-- Main Style CSS -->
+	<link rel="stylesheet" href="static/assets/css/style.css" type="text/css" media="all">  
+	<!-- responsive CSS -->
+	<link rel="stylesheet" href="static/assets/css/responsive.css" type="text/css" media="all">
+	<!-- modernizr js -->
+	<script src="static/assets/js/vendor/modernizr-3.5.0.min.js"></script>
+	<link href="https://fonts.cdnfonts.com/css/clash-display" rel="stylesheet">
+                
+                
 </head>
+
 <body>
-    <h1>Enter Details for Prediction</h1>
-    <form action="/predict" method="post">
-        {% for i in range(10) %}
-            Feature {{i+1}}: <input type="text" name="feature{{i}}" required><br><br>
-        {% endfor %}
-        <button type="submit">Predict</button>
-    </form>
-    <br>
-    <a href="/logout">Logout</a>
-</body>
-</html>
+
+
+
+	<!-- loader -->
+	<div id="loftloader-wrapper" class="end-split-h loftloader-waterfilling loftloader-forever">
+		<div class="loader-bg"></div>
+		<div class="loader-inner">
+			<div id="loader"><span></span></div>
+		</div>
+	</div>
+
+
+	<!--==================================================-->
+	<!-- Start Dreamhub Header Top Menu Area Css -->
+	<!--==================================================-->
+
+	<div class="header_top_menu">
+		<div class="container">
+			<div class="row">
+				
+				<div class="col-lg-4 col-sm-4">
+					<div class="header_top_menu_icon">
+						<div class="header_top_menu_icon_inner">
+							<ul>
+								<li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
+								<li><a href="#"><i class="fab fa-twitter"></i></a></li>
+								<li><a href="#"><i class="fab fa-instagram"></i></a></li>
+								<li><a href="#"><i class="fab fa-pinterest"></i></a></li>
+								<li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+
+	<!--==================================================-->
+	<!-- End	Dreamhub Header Top Menu Area Css -->
+	<!--===================================================-->
+
+
+	<!--==================================================-->
+	<!-- Start Dentist Main Menu  -->
+	<!--==================================================-->
+	<div id="sticky-header" class="dentist_nav_manu">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-2">
+					<div class="logo">
+						<a class="logo_img" href="#" title="dentist">
+							<img src="static/assets/images/heart.png" alt="logo">
+						</a>
+						<a class="main_sticky" href="#" title="dentist">
+							<img src="static/assets/images/heart.png" alt="logo">
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-10">
+					<nav class="dentist_menu">
+						<ul class="nav_scroll">
+							<li><a href="/home">Prediction</a></li>
+							<li><a href="/about1">Graph</a></li>
+							<li><a href="/notebook">Notebook</a></li>
+							
+						</ul>
+						<!-- header button -->
+						<div class="header-right">
+							<div class="header-button">
+								<a href="/login">Signout</a>
+							</div>
+							<div class="search-box-btn search-box-outer">
+								<div class="nav-btn navSidebar-button"><a><i class="fas fa-bars"></i></a></div>
+							</div>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="hero-section d-flex align-items-center">
+		<div class="container">
+			<div class="row hero-bg">
+				<div class="col-lg-6">
+					<div class="hero-content">
+						<h5>Welcome to Dashboard</h5>
+						
+						<p>Heart Disease Prediction Using Novel Ensemble and Blending Based Cardiovascular Disease Detection Networks: EnsCVDD-Net and BlCVDD-Net.</p>
+						
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<div class="hero-thumb">
+						<img src="static/assets/images/slider/123.jpeg" alt="">
+						<div class="slider-shape">
+							
+							<div class="shape2"><img src="static/assets/images/slider/slider-shape2.png" alt=""></div>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--==================================================-->
+	<!-- End dentist Hero Section  -->
+	<!--==================================================-->
+
+		
+
+
+	<!--==================================================-->
+	<!-- Start dentist About Section  -->
+	<!--==================================================-->
+
+	<div class="about-section">
+		<div class="container">
+			<div class="row about-bg">
+
+                {% if output %}
+                    <h3 style="font-size: xx-large;color: black;"> Result: <b style="color:red;">{{ output }}</b>  </h3>
+                {% endif %}
+
+                <br><br><br><br>
+              </div>
+            </div>
+          </div> 
+          <div class="footer-section"> 
+            <div class="container">
+              <div class="row">
+                <div class="col-lg-3 col-md-6 col-sm-6">
+                  <div class="widget widgets-company-info">
+                    <div class="dreamhub-logo">
+                    <a class="logo_thumb" href="#" title="dreamhub">
+                      <img src="static/assets/images/heart.png" alt="">
+                    </a>
+                  </div>
+                    
+                    <div class="follow-company-icon">
+                      <a href="#"> <i class="fab fa-facebook-f"></i> </a>
+                      <a href="#"> <i class="fab fa-pinterest"></i> </a>
+                      <a href="#"> <i class="fab fa-instagram"> </i> </a>
+                      <a href="#"> <i class="fab fa-google"></i> </a>
+                    </div>
+                  </div>					
+                </div>
+                
+              </div>
+              <div class="row footer-bg">
+                <div class="col-lg-12 col-md-12">
+                  <div class="footer-bottom-content">
+                    <div class="footer-bottom-content-copy">
+                      <p>©2023 All Rights Reserved Dreamhub</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>	
+        
+        
+          <!--==================================================-->
+          <!-- End Dentist Footer Section  -->
+          <!--==================================================-->
+        
+        
+        
+        
+          <!--==================================================-->
+          <!-- Start scrollup section -->
+          <!--==================================================-->
+          <div id="progress" class="progress hide">
+            <div id="progress-value"></div>
+          </div>
+          <!--==================================================-->
+          <!-- Start scrollup section -->
+          <!--==================================================-->
+        
+        
+        
+        
+        
+          <script src="static/assets/js/vendor/jquery-3.6.2.min.js"></script>
+        
+          <script src="static/assets/js/popper.min.js"></script>
+        
+          <script src="static/assets/js/bootstrap.min.js"></script>
+        
+          <script src="static/assets/js/owl.carousel.min.js"></script>
+        
+          <script src="static/assets/js/jquery.counterup.min.js"></script>
+        
+          <script src="static/assets/js/waypoints.min.js"></script>
+        
+          <script src="static/assets/js/wow.js"></script>
+        
+          <script src="static/assets/js/imagesloaded.pkgd.min.js"></script>
+        
+          <script src="static/venobox/venobox.js"></script>
+        
+          <script src="static/assets/js/animated-text.js"></script>
+        
+          <script src="static/venobox/venobox.min.js"></script>
+        
+          <script src="static/assets/js/isotope.pkgd.min.js"></script>
+        
+          <script src="static/assets/js/jquery.meanmenu.js"></script>
+        
+          <script src="static/assets/js/jquery.scrollUp.js"></script>
+        
+          <script src="static/assets/js/custom.js"></script>
+        
+        </body>
+        
+        </html>
