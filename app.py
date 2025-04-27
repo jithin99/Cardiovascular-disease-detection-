@@ -2,48 +2,20 @@ from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import pickle
 import numpy as np
-import requests
 import os
+import zipfile
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Replace with a strong secret key
 
-# Download file from Google Drive (Special Handling for big files)
-def download_file_from_google_drive(file_id, destination):
-    URL = "https://docs.google.com/uc?export=download"
+# Unzip model.zip if model.sav is not already extracted
+if not os.path.exists('model.sav'):
+    if os.path.exists('model.zip'):
+        with zipfile.ZipFile('model.zip', 'r') as zip_ref:
+            zip_ref.extractall()
 
-    session = requests.Session()
-
-    response = session.get(URL, params={'id': file_id}, stream=True)
-    token = get_confirm_token(response)
-
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(URL, params=params, stream=True)
-
-    save_response_content(response, destination)
-
-def get_confirm_token(response):
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            return value
-    return None
-
-def save_response_content(response, destination):
-    CHUNK_SIZE = 32768
-
-    with open(destination, "wb") as f:
-        for chunk in response.iter_content(CHUNK_SIZE):
-            if chunk:
-                f.write(chunk)
-
-# Load the model
-model_path = 'model.sav'
-if not os.path.exists(model_path):
-    file_id = '1MQFmVhzcL8BPHdtck1M39Sk8nB511pWN'  # your file ID from Google Drive link
-    download_file_from_google_drive(file_id, model_path)
-
-model = pickle.load(open(model_path, 'rb'))
+# Load the trained model
+model = pickle.load(open('model.sav', 'rb'))
 
 # Route: Home page
 @app.route('/')
